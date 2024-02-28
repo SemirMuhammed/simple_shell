@@ -60,7 +60,7 @@ int handle_cmd_error(local_t **local, char *const *cmd, int *exit_status)
 			free((*cmd));
 		return (-1);
 	}
-	if ((*cmd)[0] == ';' && !(*cmd)[1])
+	if ((*cmd)[0] == ';')
 	{
 		(*local)->error_checker = 5;
 		goto error;
