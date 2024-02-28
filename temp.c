@@ -23,12 +23,6 @@ int handle_operator(local_t **local, char **prog, int pc, int *exit_status)
 	(*local)->exit_status = *exit_status;
 	for (ac = 0; av[ac]; ac++)
 	{
-		/* i = handle_cls(&(*local), av, ac, argc, prog, &(*exit_status));
-		if (i == 0)
-			break;
-		else if (i == 1)
-			continue; */
-
 		(*local)->argv[argc] = NULL;
 		(*local)->argv[argc] = (char *) malloc(sizeof(char) * (_strlen(av[ac]) + 1));
 		for (i = 0; av[ac][i]; i++)
