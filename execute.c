@@ -51,7 +51,7 @@ char *get_program(char *const *argv, char *const *environ)
 	(void)environ;
 	if (!argv || !(*argv))
 		return (NULL);
-	if (!(stat(argv[0], &st)))
+	if (!(stat(argv[0], &st)) || argv[0][0] == '/')
 	{
 		get_mem(&program, _strlen(argv[0]) + 1);
 		for (i = 0; argv[0][i]; i++)
