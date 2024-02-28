@@ -15,7 +15,6 @@ int handle_operator(local_t **local, char **prog, int pc, int *exit_status)
 	char **av = NULL;
 
 	av = get_argv(prog[pc], " \t", 1);
-	puts(*av);
 	if (av == NULL)
 		return (-1);
 	for (ac = 0; av[ac]; ac++)

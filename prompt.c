@@ -14,7 +14,7 @@ int handle_prompt(local_t **local)
 	int cc = 0;
 
 	cmd = get_cmd(&(*local), exit_status);
-	if (*cmd == '\n' || *cmd == '#')
+	if (*cmd == '\n')
 	{
 		free(cmd);
 		if ((*local)->signal == 0)
