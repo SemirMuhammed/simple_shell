@@ -102,7 +102,8 @@ error:
  */
 char *get_cmd(local_t **local, int exit_status)
 {
-	char *cmd = NULL;
+	int i, c = 0;
+	char *cmd = NULL, *temp = NULL;
 	size_t cm = 0;
 	ssize_t cc = 0;
 
@@ -110,7 +111,18 @@ char *get_cmd(local_t **local, int exit_status)
 	if ((*local)->active)
 		write(STDOUT_FILENO, &(*local)->prompt[0], _strlen((*local)->prompt));
 
-	cc = _getline(&cmd, &cm, (*local)->fd);
+	cc = _getline(&temp, &cm, (*local)->fd);
+
+	for (i = 0; temp[i] && (temp[i] == ' ' || temp[i] == '\t'); i++)
+		continue;
+	get_mem(&cmd, _strlen(temp) - (size_t) i + 2);
+	if (!temp[i])
+		cmd[c++] = '\n';
+	for (; temp[i]; i++)
+		cmd[c++] = temp[i];
+	cmd[c] = '\0';
+	free(temp);
+
 
 	if (cc == -1)
 	{
