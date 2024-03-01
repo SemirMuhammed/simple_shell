@@ -106,6 +106,24 @@ char *get_cmd(local_t **local, int exit_status)
 		write(STDOUT_FILENO, &(*local)->prompt[0], _strlen((*local)->prompt));
 
 	cc = _getline(&temp, &cm, (*local)->fd);
+	if (cc == -1)
+	{
+		free(temp);
+		return (NULL);
+	}
+	/* Check if CTRL_D (EOF) is only captured */
+	if (cc == -2)
+	{
+		free(temp);
+		if ((*local)->active)
+			write(STDOUT_FILENO, "\n", 1);
+		handle_alias(&(*local), 1);
+		if ((*local)->signal == 0)
+			free(*local);
+		if (errno == 130)
+			exit(130);
+		exit(exit_status);
+	}
 
 	for (i = 0; temp[i] && (temp[i] == ' ' || temp[i] == '\t'); i++)
 		continue;
@@ -168,24 +186,7 @@ char *get_cmd(local_t **local, int exit_status)
 	free(temp);
 
 
-	if (cc == -1)
-	{
-		free(cmd);
-		return (NULL);
-	}
-	/* Check if CTRL_D (EOF) is only captured */
-	if (cc == -2)
-	{
-		free(cmd);
-		if ((*local)->active)
-			write(STDOUT_FILENO, "\n", 1);
-		handle_alias(&(*local), 1);
-		if ((*local)->signal == 0)
-			free(*local);
-		if (errno == 130)
-			exit(130);
-		exit(exit_status);
-	}
+	
 
 	return (cmd);
 }
@@ -233,8 +234,7 @@ ssize_t _getline(char **line, size_t *n, int const fd)
 			break;
 	}
 
-	if (lc - 1 != 0)
-		(*line)[lc - 1] = '\0';
+	(*line)[lc - 1] = '\0';
 	if (get_mem(&(*line), lc-- + 1) == 1)
 		return (-1);
 
