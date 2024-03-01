@@ -72,7 +72,6 @@ int handle_cls(local_t **local, char **av, int ac, int argc,
 		(*local)->argv[argc] = NULL;
 		if (handle_builtin(&(*local), prog, av) != 0)
 			*exit_status = execute(&(*local));
-		argc = 0;
 		if (!*exit_status)
 			return (0);
 
@@ -82,7 +81,6 @@ int handle_cls(local_t **local, char **av, int ac, int argc,
 		(*local)->argv[argc] = NULL;
 		if (handle_builtin(&(*local), prog, av) != 0)
 			*exit_status = execute(&(*local));
-		argc = 0;
 		if (*exit_status)
 			return (0);
 	}
