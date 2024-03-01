@@ -158,17 +158,21 @@ char *get_cmd(local_t **local, int exit_status)
 			i++;
 			get_mem(&VAR, 256);
 			oc = 0;
-			for (; temp[i] && temp[i] != ' ' &&
-			temp[i] != '\t' && temp[i] != '$' &&
-			temp[i] != ';'; i++)
+			for (; temp[i] > 32 && 
+			temp[i] != '$' && temp[i] != ';'; i++)
 				VAR[oc++] = temp[i];
 			VAR[oc++] = '\0';
 			get_mem(&VAR, oc);
 			temp2 = _getenv(VAR, (*local)->environ);
-			if (temp2)
-				i -= 2;
 			free(VAR);
 			VAR = NULL;
+			if (temp2)
+				i -= 2;
+			else
+			{
+				i--;
+				continue;
+			}
 		}
 		if (temp2 != NULL)
 		{

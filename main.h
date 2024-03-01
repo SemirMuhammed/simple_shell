@@ -31,6 +31,7 @@ typedef struct local
 	int ac;
 	char **av;
 	char **environ;
+	int environ_count;
 	int pc;
 	char **argv;
 	char **alias;

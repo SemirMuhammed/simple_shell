@@ -10,6 +10,7 @@
  */
 local_t *local_init(int ac, char **av, char **envp)
 {
+	int ec;
 	char *prompt = "$ ";
 	local_t *local = NULL;
 
@@ -29,13 +30,15 @@ local_t *local_init(int ac, char **av, char **envp)
 
 	local->argv = NULL;
 	local->environ = envp;
+	for (ec = 0; envp[ec] != NULL; ec++)
+		continue;
+	local->environ_count = ec;
 
 	local->active = 1;
 	if (!isatty(STDIN_FILENO) || ac == 2)
 		local->active = 0;
 	signal(SIGINT, int_handler);
 	local->signal = 0;
-
 
 	return (local);
 }
