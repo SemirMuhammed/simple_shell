@@ -23,7 +23,7 @@ char **get_argv(char *const str, char *const delim, int damn)
 		free_argv(argv);
 		return (NULL);
 	}
-	argv[ac] = (char *) malloc(sizeof(char) * n);
+	argv[ac] = (char *) malloc(sizeof(char) * (n + 1));
 	if (argv[ac] == NULL)
 	{
 		free_argv(argv);
@@ -61,7 +61,7 @@ int handle_argv(char *const str, char *const delim, char ***argv, int *ac,
 		if ((*avc) == *n)
 		{
 			*n *= 2;
-			(*argv)[(*ac)] = (char *) realloc((*argv)[*ac], sizeof(char) * *n);
+			(*argv)[(*ac)] = (char *) realloc((*argv)[*ac], sizeof(char) * (*n + 1));
 			if ((*argv)[(*ac)] == NULL)
 				return (free_argv(*argv));
 		}
