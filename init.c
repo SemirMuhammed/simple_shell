@@ -25,7 +25,6 @@ local_t *local_init(int ac, char **av, char **envp)
 
 	local->fd = STDIN_FILENO;
 	local->error_checker = 0;
-	
 	local->exit_status = 0;
 
 	local->argv = NULL;

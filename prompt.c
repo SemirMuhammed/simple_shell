@@ -101,7 +101,6 @@ char *get_cmd(local_t **local, int exit_status)
 	size_t cm = 0;
 	ssize_t cc = 0;
 
-	/* Check for Interactive or Non-Interactive Mode */
 	if ((*local)->active)
 		write(STDOUT_FILENO, &(*local)->prompt[0], _strlen((*local)->prompt));
 
@@ -111,7 +110,6 @@ char *get_cmd(local_t **local, int exit_status)
 		free(temp);
 		return (NULL);
 	}
-	/* Check if CTRL_D (EOF) is only captured */
 	if (cc == -2)
 	{
 		free(temp);
@@ -158,7 +156,7 @@ char *get_cmd(local_t **local, int exit_status)
 			i++;
 			get_mem(&VAR, 256);
 			oc = 0;
-			for (; temp[i] > 32 && 
+			for (; temp[i] > 32 &&
 			temp[i] != '$' && temp[i] != ';'; i++)
 				VAR[oc++] = temp[i];
 			VAR[oc++] = '\0';

@@ -8,8 +8,7 @@
  */
 int handle_cd(local_t **local)
 {
-	int check;
-	int i;
+	int check, i;
 	char *cd_cmd = "cd\0", *oldpwd = NULL;
 	char *path = NULL, *old = "-";
 
@@ -39,18 +38,15 @@ int handle_cd(local_t **local)
 		check = chdir(path);
 	else
 		check = chdir((*local)->argv[1]);
+	free(path);
 	if (check == -1)
 	{
 		(*local)->error_checker = 4;
 		error(&(*local));
-		free(path);
 		free(oldpwd);
 		return (0);
 	}
-
 	cd_env(&(*local), oldpwd);
-	free(path);
-
 	return (0);
 }
 
@@ -65,7 +61,7 @@ int handle_alias(local_t **local, int const exit)
 {
 	int i, argc = 0, ec = 0;
 	char **argv = (*local)->argv;
-	static char **alias = NULL;
+	static char **alias;
 	int ac = 0;
 
 	(void)ec;

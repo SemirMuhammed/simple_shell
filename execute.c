@@ -52,7 +52,7 @@ char *get_program(char *const *argv, char *const *environ)
 		return (NULL);
 	if (!(stat(argv[0], &st)))
 	{
-		if (argv[0][0] == '/' || 
+		if (argv[0][0] == '/' ||
 			(argv[0][0] == '.' || argv[0][1] == '/'))
 			i = 0;
 		else if (access(argv[0], F_OK) != -1)

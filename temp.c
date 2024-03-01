@@ -47,11 +47,9 @@ int handle_operator(local_t **local, char **prog, int pc, int *exit_status)
 		if (handle_builtin(&(*local), prog, av) != 0)
 			*exit_status = execute(&(*local));
 	}
-
 	free_argv(av);
 	if ((*local)->signal != 5)
 		free_argv((*local)->argv);
-
 	return (0);
 }
 
@@ -69,9 +67,6 @@ int handle_operator(local_t **local, char **prog, int pc, int *exit_status)
 int handle_cls(local_t **local, char **av, int ac, int argc,
 	       char **prog, int *exit_status)
 {
-	/*int vc;
-	char *VAR = NULL;*/
-
 	if (av[ac][0] == '|' && av[ac][1] == '|')
 	{
 		(*local)->argv[argc] = NULL;
@@ -91,17 +86,6 @@ int handle_cls(local_t **local, char **av, int ac, int argc,
 		if (*exit_status)
 			return (0);
 	}
-/*	else if (av[ac][0] == '$' && av[ac][1] == '$')
-		(*local)->argv[argc++] = itoa((int) getpid());
-	else if (av[ac][0] == '$' && av[ac][1])
-	{
-		get_mem(&VAR, _strlen(av[ac]));
-		for (vc = 0; av[ac][vc + 1]; vc++)
-			VAR[vc] = av[ac][vc + 1];
-		VAR[vc] = '\0';
-		(*local)->argv[argc++] = _getenv(VAR, (*local)->environ);
-		free(VAR);
-	}*/
 	else
 		return (2);
 	return (1);
