@@ -43,6 +43,8 @@ int handle_cd(local_t **local)
 	{
 		(*local)->error_checker = 4;
 		error(&(*local));
+		free(path);
+		free(oldpwd);
 		return (0);
 	}
 

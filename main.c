@@ -17,6 +17,15 @@ int main(int ac, char **av, char **envp)
 	local = local_init(ac, av, envp);
 	if (local == NULL)
 		return (-1);
+	if (ac == 2)
+	{
+		local->fd = open(av[1], O_RDONLY);
+		if (local->fd == -1)
+		{
+			local->error_checker = 7;
+			return (error(&local));
+		}
+	}
 	while (1)
 	{
 		local->pc = pc;
@@ -26,9 +35,12 @@ int main(int ac, char **av, char **envp)
 			continue;
 		pc++;
 
-		if (ac == 2)
-			close(local->fd);
 		fflush(stdin);
+		if (ac == 2)
+		{
+			close(local->fd);
+			break;
+		}
 	}
 	free(local);
 	return (local->exit_status);

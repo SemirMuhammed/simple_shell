@@ -55,7 +55,7 @@ int handle_argv(char *const str, char *const delim, char ***argv, int *ac,
 {
 	int sc = 0, check = 0;
 
-	handle_special(str, &sc);
+	/* handle_special(str, &sc); */
 	for (; str[sc]; sc++)
 	{
 		if ((*avc) == *n)

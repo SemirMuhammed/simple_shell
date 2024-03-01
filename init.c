@@ -23,9 +23,8 @@ local_t *local_init(int ac, char **av, char **envp)
 	local->av = av;
 
 	local->fd = STDIN_FILENO;
-	if (ac == 2)
-		local->fd = open(av[1], O_RDONLY);
 	local->error_checker = 0;
+	
 	local->exit_status = 0;
 
 	local->argv = NULL;

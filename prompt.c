@@ -129,12 +129,13 @@ char *get_cmd(local_t **local, int exit_status)
 		continue;
 	cm += 2;
 	get_mem(&cmd, cm);
-	if (!temp[i])
+	if (!temp[i] || temp[i] == '#')
 		cmd[c++] = '\n';
+
 	for (; temp[i]; i++)
 	{
 		if (((temp[i] == ' ' || temp[i] == '\t' || temp[i] == ';')
-				&& temp[i + 1] == '#') || temp[0] == '#')
+				&& temp[i + 1] == '#'))
 			break;
 		if (temp[i] == '&' && temp[i + 1] == '&')
 		{
@@ -184,9 +185,6 @@ char *get_cmd(local_t **local, int exit_status)
 	cmd[c] = '\0';
 	get_mem(&cmd, _strlen(cmd) + 1);
 	free(temp);
-
-
-	
 
 	return (cmd);
 }

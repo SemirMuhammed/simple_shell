@@ -35,12 +35,12 @@ void print_error_init(local_t **local)
 {
 	char *ec = NULL;
 
-	if ((*local)->ac == 2)
-		write(STDERR_FILENO, &(*local)->av[1][0], _strlen((*local)->av[1]));
-	else
-		write(STDERR_FILENO, &(*local)->av[0][0], _strlen((*local)->av[0]));
+	write(STDERR_FILENO, &(*local)->av[0][0], _strlen((*local)->av[0]));
 	write(STDERR_FILENO, ": ", 2);
-	ec = itoa((*local)->pc);
+	if ((*local)->ac == 2)
+		ec = itoa(0);
+	else
+		ec = itoa((*local)->pc);
 	write(STDERR_FILENO, &ec[0], _strlen(ec));
 	free(ec);
 }
@@ -81,6 +81,12 @@ void handle_builtin_errors(local_t **local)
 		write(STDERR_FILENO, ";", 1);
 		write(STDERR_FILENO, ";", 1);
 		write(STDERR_FILENO, &temp[17], 13);
+	}
+	else if ((*local)->error_checker == 7)
+	{
+		write(STDERR_FILENO, ": Can't open ", 13);
+		write(STDERR_FILENO, &((*local)->av[1])[0], _strlen((*local)->av[1]));
+		write(STDERR_FILENO, "\n", 1);
 	}
 
 	(*local)->exit_status = 2;
