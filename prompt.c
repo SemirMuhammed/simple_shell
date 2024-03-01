@@ -150,10 +150,10 @@ char *get_cmd(local_t **local, int exit_status)
 			i += 2;
 		}
 		else if (temp[i] == '$' && temp[i + 1] == '?')
-			temp2 = itoa((*local)->exit_status);
+			cmd[c++] = ' ';
 		else if (temp[i] == '$' && temp[i + 1] == '$')
 			temp2 = itoa((int) getpid());
-		else if (temp[i] == '$' && temp[i + 1])
+		else if (temp[i] == '$' && temp[i + 1] > 32)
 		{
 			i++;
 			get_mem(&VAR, 256);
@@ -165,7 +165,8 @@ char *get_cmd(local_t **local, int exit_status)
 			VAR[oc++] = '\0';
 			get_mem(&VAR, oc);
 			temp2 = _getenv(VAR, (*local)->environ);
-			i -= 2;
+			if (temp2)
+				i -= 2;
 			free(VAR);
 			VAR = NULL;
 		}

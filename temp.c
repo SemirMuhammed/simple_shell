@@ -23,6 +23,11 @@ int handle_operator(local_t **local, char **prog, int pc, int *exit_status)
 	(*local)->exit_status = *exit_status;
 	for (ac = 0; av[ac]; ac++)
 	{
+		if (av[ac][0] == '$' && av[ac][1] == '?')
+		{
+			(*local)->argv[argc++] = itoa(*exit_status);
+			continue;
+		}
 		checker = handle_cls(&(*local), av, ac, argc, prog, exit_status);
 		if (checker != 2)
 			argc = 0;
@@ -86,9 +91,7 @@ int handle_cls(local_t **local, char **av, int ac, int argc,
 		if (*exit_status)
 			return (0);
 	}
-/*	else if (av[ac][0] == '$' && av[ac][1] == '?')
-		(*local)->argv[argc++] = itoa(*exit_status);
-	else if (av[ac][0] == '$' && av[ac][1] == '$')
+/*	else if (av[ac][0] == '$' && av[ac][1] == '$')
 		(*local)->argv[argc++] = itoa((int) getpid());
 	else if (av[ac][0] == '$' && av[ac][1])
 	{

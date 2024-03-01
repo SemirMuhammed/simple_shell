@@ -23,6 +23,8 @@ int error(local_t **local)
 			write(STDERR_FILENO, ": File name too long\n", 21);
 		status = 127;
 	}
+	if ((*local)->error_checker == 7)
+		status = 127;
 
 	return (status);
 }
