@@ -131,7 +131,7 @@ int handle_delim(char *const str, char *const delim, char ***argv, int *ac,
 				return (free_argv(*argv));
 			(*avc) = 0;
 			*n = 16;
-			(*argv)[(*ac)] = (char *) malloc(sizeof(char) * *n);
+			(*argv)[(*ac)] = (char *) malloc(sizeof(char) * (*n + 1));
 			if ((*argv)[(*ac)] == NULL)
 				return (free_argv(*argv));
 			break;
