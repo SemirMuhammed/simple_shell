@@ -48,11 +48,15 @@ char *get_program(char *const *argv, char *const *environ)
 	char *program = NULL;
 	struct stat st;
 
-	(void)environ;
 	if (!argv || !(*argv))
 		return (NULL);
-	if (!(stat(argv[0], &st)) || argv[0][0] == '/')
+	if (!(stat(argv[0], &st)))
 	{
+		if (argv[0][0] == '/' || 
+			(argv[0][0] == '.' || argv[0][1] == '/'))
+			i = 0;
+		else if (access(argv[0], F_OK) != -1)
+			goto cwd;
 		get_mem(&program, _strlen(argv[0]) + 1);
 		for (i = 0; argv[0][i]; i++)
 			program[i] = argv[0][i];
@@ -61,6 +65,9 @@ char *get_program(char *const *argv, char *const *environ)
 	else
 		program = handle_path(argv, environ);
 
+	return (program);
+cwd:
+	program = handle_path(argv, environ);
 	return (program);
 }
 
@@ -78,6 +85,8 @@ char *handle_path(char *const *argv, char *const *environ)
 	struct stat st;
 
 	PATH = _getenv("PATH", environ);
+	if (PATH == NULL)
+		return (NULL);
 
 	path = get_argv(PATH, ":", 0);
 	free(PATH);

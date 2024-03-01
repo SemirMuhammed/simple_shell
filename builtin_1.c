@@ -21,10 +21,16 @@ int handle_cd(local_t **local)
 	for (i = 0; (*local)->argv[i]; i++)
 		continue;
 	if (i == 1)
+	{
 		path = _getenv("HOME", (*local)->environ);
+		if (path == NULL)
+			path = getcwd(NULL, 0);
+	}
 	else if ((*local)->argv[1][0] == old[0] && ((*local)->argv[1][1] == '\0'))
 	{
 		path = _getenv("OLDPWD", (*local)->environ);
+		if (path == NULL)
+			path = getcwd(NULL, 0);
 		write(STDOUT_FILENO, &path[0], _strlen(path));
 		write(STDOUT_FILENO, "\n", 1);
 	}
@@ -57,7 +63,7 @@ int handle_alias(local_t **local, int const exit)
 {
 	int i, argc = 0, ec = 0;
 	char **argv = (*local)->argv;
-	char **alias = NULL;
+	static char **alias = NULL;
 	int ac = 0;
 
 	(void)ec;

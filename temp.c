@@ -11,7 +11,7 @@
  */
 int handle_operator(local_t **local, char **prog, int pc, int *exit_status)
 {
-	int ac, argc = 0, i;
+	int ac, argc = 0, i, checker;
 	char **av = NULL;
 
 	av = get_argv(prog[pc], " \t", 1);
@@ -23,6 +23,13 @@ int handle_operator(local_t **local, char **prog, int pc, int *exit_status)
 	(*local)->exit_status = *exit_status;
 	for (ac = 0; av[ac]; ac++)
 	{
+		checker = handle_cls(&(*local), av, ac, argc, prog, exit_status);
+		if (checker != 2)
+			argc = 0;
+		if (checker == 1)
+			continue;
+		if (checker == 0)
+			break;
 		(*local)->argv[argc] = NULL;
 		(*local)->argv[argc] = (char *) malloc(sizeof(char) * (_strlen(av[ac]) + 1));
 		for (i = 0; av[ac][i]; i++)
@@ -57,8 +64,8 @@ int handle_operator(local_t **local, char **prog, int pc, int *exit_status)
 int handle_cls(local_t **local, char **av, int ac, int argc,
 	       char **prog, int *exit_status)
 {
-	int vc;
-	char *VAR = NULL;
+	/*int vc;
+	char *VAR = NULL;*/
 
 	if (av[ac][0] == '|' && av[ac][1] == '|')
 	{
@@ -79,7 +86,7 @@ int handle_cls(local_t **local, char **av, int ac, int argc,
 		if (*exit_status)
 			return (0);
 	}
-	else if (av[ac][0] == '$' && av[ac][1] == '?')
+/*	else if (av[ac][0] == '$' && av[ac][1] == '?')
 		(*local)->argv[argc++] = itoa(*exit_status);
 	else if (av[ac][0] == '$' && av[ac][1] == '$')
 		(*local)->argv[argc++] = itoa((int) getpid());
@@ -91,7 +98,7 @@ int handle_cls(local_t **local, char **av, int ac, int argc,
 		VAR[vc] = '\0';
 		(*local)->argv[argc++] = _getenv(VAR, (*local)->environ);
 		free(VAR);
-	}
+	}*/
 	else
 		return (2);
 	return (1);

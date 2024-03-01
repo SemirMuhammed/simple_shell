@@ -8,20 +8,17 @@
  */
 int handle_prompt(local_t **local)
 {
-	static int exit_status = EXIT_SUCCESS;
 	int i = 0;
 	char **prog = NULL, *cmd = NULL;
 	int cc = 0;
 
-	cmd = get_cmd(&(*local), exit_status);
+	cmd = get_cmd(&(*local), (*local)->exit_status);
 	if (*cmd == '\n')
 	{
 		free(cmd);
-		if ((*local)->signal == 0)
-			free(*local);
 		return (2);
 	}
-	cc = handle_cmd_error(&(*local), &cmd, &exit_status);
+	cc = handle_cmd_error(&(*local), &cmd, &(*local)->exit_status);
 	if (cc != 1)
 		return (cc);
 
@@ -31,12 +28,10 @@ int handle_prompt(local_t **local)
 	free(cmd);
 	while (prog[i])
 	{
-		handle_operator(&(*local), prog, i, &exit_status);
+		handle_operator(&(*local), prog, i, &(*local)->exit_status);
 		i++;
 	}
 	free_argv(prog);
-	if ((*local)->signal == 0 || (*local)->signal == 20)
-		free(*local);
 
 	return (0);
 }
@@ -88,8 +83,6 @@ error:
 		(*local)->exit_status = 2;
 		return (-1);
 	}
-	if ((*local)->signal == 0)
-		free(*local);
 	return (0);
 }
 
@@ -102,8 +95,9 @@ error:
  */
 char *get_cmd(local_t **local, int exit_status)
 {
-	int i, c = 0;
-	char *cmd = NULL, *temp = NULL;
+	int i = 0, c = 0, oc = 0;
+	char *cmd = NULL, *temp = NULL, *temp2 = NULL, *VAR = NULL;
+	char *operator[] = { " && ", " || ", NULL};
 	size_t cm = 0;
 	ssize_t cc = 0;
 
@@ -115,12 +109,62 @@ char *get_cmd(local_t **local, int exit_status)
 
 	for (i = 0; temp[i] && (temp[i] == ' ' || temp[i] == '\t'); i++)
 		continue;
-	get_mem(&cmd, _strlen(temp) - (size_t) i + 2);
+	cm += 2;
+	get_mem(&cmd, cm);
 	if (!temp[i])
 		cmd[c++] = '\n';
 	for (; temp[i]; i++)
+	{
+		if (((temp[i] == ' ' || temp[i] == '\t' || temp[i] == ';')
+				&& temp[i + 1] == '#') || temp[0] == '#')
+			break;
+		if (temp[i] == '&' && temp[i + 1] == '&')
+		{
+			for (oc = 0; operator[0][oc]; oc++)
+				cmd[c++] = operator[0][oc];
+			i += 2;
+		}
+		else if (temp[i] == '|' && temp[i + 1] == '|')
+		{
+			for (oc = 0; operator[1][oc]; oc++)
+				cmd[c++] = operator[1][oc];
+			i += 2;
+		}
+		else if (temp[i] == '$' && temp[i + 1] == '?')
+			temp2 = itoa((*local)->exit_status);
+		else if (temp[i] == '$' && temp[i + 1] == '$')
+			temp2 = itoa((int) getpid());
+		else if (temp[i] == '$' && temp[i + 1])
+		{
+			i++;
+			get_mem(&VAR, 256);
+			oc = 0;
+			for (; temp[i] && temp[i] != ' ' &&
+			temp[i] != '\t' && temp[i] != '$' &&
+			temp[i] != ';'; i++)
+				VAR[oc++] = temp[i];
+			VAR[oc++] = '\0';
+			get_mem(&VAR, oc);
+			temp2 = _getenv(VAR, (*local)->environ);
+			i -= 2;
+			free(VAR);
+			VAR = NULL;
+		}
+		if (temp2 != NULL)
+		{
+			i++;
+			cm += _strlen(temp2) + 1;
+			get_mem(&cmd, cm);
+			for (oc = 0; temp2[oc]; oc++)
+				cmd[c++] = temp2[oc];
+			free(temp2);
+			temp2 = NULL;
+			continue;
+		}
 		cmd[c++] = temp[i];
+	}
 	cmd[c] = '\0';
+	get_mem(&cmd, _strlen(cmd) + 1);
 	free(temp);
 
 
@@ -140,8 +184,6 @@ char *get_cmd(local_t **local, int exit_status)
 			free(*local);
 		if (errno == 130)
 			exit(130);
-		else if (errno == 0)
-			exit(0);
 		exit(exit_status);
 	}
 
@@ -193,7 +235,7 @@ ssize_t _getline(char **line, size_t *n, int const fd)
 
 	if (lc - 1 != 0)
 		(*line)[lc - 1] = '\0';
-	if (get_mem(&(*line), lc--) == 1)
+	if (get_mem(&(*line), lc-- + 1) == 1)
 		return (-1);
 
 	return (lc);

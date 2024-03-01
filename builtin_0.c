@@ -11,8 +11,8 @@
  */
 int handle_builtin(local_t **local, char **prog, char **av)
 {
-	/* if (handle_alias(local, 0) == 0) */
-		/* return (0); */
+	if (handle_alias(local, 0) == 0)
+		return (0);
 	if (handle_exit(local, prog, av, (*local)->exit_status) == 0)
 		return (0);
 	if (handle_env(local) == 0)
@@ -52,7 +52,7 @@ int handle_exit(local_t **local, char **prog, char **av, int exit_status)
 	if (argc == 2)
 	{
 		status = atoi((*local)->argv[1]);
-		if (status == 0 && (*local)->argv[1][0] != '0')
+		if ((status == 0 && (*local)->argv[1][0] != '0') || status < 0)
 		{
 			(*local)->error_checker = 1;
 			error(&(*local));

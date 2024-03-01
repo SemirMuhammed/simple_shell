@@ -17,20 +17,20 @@ int main(int ac, char **av, char **envp)
 	local = local_init(ac, av, envp);
 	if (local == NULL)
 		return (-1);
-	local->pc = pc;
-
-	checker = handle_prompt(&local);
-	if (checker && checker != 2)
+	while (1)
 	{
-		checker = local->exit_status;
-		free(local);
-		return (checker);
-	}
-	pc++;
+		local->pc = pc;
 
-	if (ac == 2)
-		close(local->fd);
-	fflush(stdin);
-	return (main(ac, av, envp));
+		checker = handle_prompt(&local);
+		if (checker == 2)
+			continue;
+		pc++;
+
+		if (ac == 2)
+			close(local->fd);
+		fflush(stdin);
+	}
+	free(local);
+	return (local->exit_status);
 }
 

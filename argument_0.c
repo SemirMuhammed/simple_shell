@@ -67,8 +67,8 @@ int handle_argv(char *const str, char *const delim, char ***argv, int *ac,
 		}
 		if (check == 0)
 		{
-			if (handle_comment(str, &(*argv), &(*ac), &(*avc), &sc))
-				return (0);
+			/*if (handle_comment(str, &(*argv), &(*ac), &(*avc), &sc))
+				return (0);*/
 			if (handle_delim(str, delim, &(*argv), &(*ac),
 				&(*avc), &(*acm), &(*n), &sc))
 				return (1);

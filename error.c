@@ -55,7 +55,7 @@ void handle_builtin_errors(local_t **local)
 
 	if ((*local)->error_checker == 1)
 	{
-		write(STDERR_FILENO, ": Illegal number: ", 19);
+		write(STDERR_FILENO, ": exit: Illegal number: ", 24);
 		write(STDERR_FILENO, &((*local)->argv[1])[0], _strlen((*local)->argv[1]));
 		write(STDERR_FILENO, "\n", 1);
 	}
@@ -65,7 +65,7 @@ void handle_builtin_errors(local_t **local)
 		write(STDERR_FILENO, ": Usage: unsetenv VARIABLE\n", 27);
 	else if ((*local)->error_checker == 4)
 	{
-		write(STDERR_FILENO, ": can't cd to ", 14);
+		write(STDERR_FILENO, ": cd: can't cd to ", 18);
 		write(STDERR_FILENO, &((*local)->argv[1])[0], _strlen((*local)->argv[1]));
 		write(STDERR_FILENO, "\n", 1);
 	}
@@ -83,5 +83,6 @@ void handle_builtin_errors(local_t **local)
 		write(STDERR_FILENO, &temp[17], 13);
 	}
 
+	(*local)->exit_status = 2;
 }
 
